@@ -87,7 +87,7 @@ def create_ec2_instances(security_group_id,
                          ami="ami-0149b2da6ceec4bb0",
                          silent=False,
                          user_data=""
-    ):
+    ) -> dict:
     client = boto3.client('ec2')
 
     try:

@@ -1,15 +1,13 @@
-import src.constants
-import src.utilities
+import pyt.constants
+import pyt.utilities
+import os.path
 
 # this class directs the flow of the whole program
 class Controller:
-    constants = src.constants.Constants
-    utilities = src.utilities
+    constants = pyt.constants.Constants
+    utilities = pyt.utilities
     instances = None
     instance_id = None
-
-    def hello_world(self):
-        print("Hello World!")
     
     def check_sg_and_kp(self):
         if self.constants.KEY_PAIR_PATH is None:
@@ -45,22 +43,26 @@ class Controller:
         self.check_sg_and_kp()
         self.utilities.print_info("Initialization done.")
 
-    def create_ec2_instances():
-        self.instances = (self.utilities.create_ec2_instances(self.constants.SECURITY_GROUP_ID, 
-                                                        self.constants.KEY_PAIR_NAME,
-                                                        instance_type, 
-                                                        self.constants.NUMBER_OF_M4_LARGE_INSTANCES, 
-                                                        self.constants.AMI_ID, 
-                                                        False,
-                                                        user_data))
-        self.instance_id = instances['Instances'][0]['InstanceId']
-
-        #wait until the instance is running
-        self.utilities.print_info("Waiting for the " + self.instance_id +" instance to start running...")
-        self.utilities.wait_for_instances(instance_id, 'instance_running')
-
     def auto_setup(self):
-        self.create_ec2_instances()
+        self.initialize_env()
+
+        self.utilities.print_info("Creating M4.large instance...")
+        with open("./src/bash/vm_setup.sh", 'r') as file:
+            user_data = file.read()
+
+        response = self.utilities.create_ec2_instances(
+            self.constants.SECURITY_GROUP_ID,
+            self.constants.KEY_PAIR_NAME,
+            self.constants.M4_LARGE,
+            user_data=user_data
+        )
+
+        self.instance_id = response['Instances'][0]['InstanceId']
+        self.utilities.print_info(f"Created instance with ID: {self.instance_id}.")
+
+        self.utilities.print_info("Waiting for the instance to start running (with Hadoop and Spark installed)...")
+        self.utilities.wait_for_instances([self.instance_id], 'instance_running')
+        self.utilities.print_info("The instance is now running.")
 
     def delete_security_group(self):
         self.utilities.delete_security_group(self.constants.SECURITY_GROUP_ID, silent=True)
@@ -75,10 +77,10 @@ class Controller:
 
         self.utilities.print_info("Key Pair "+ self.constants.KEY_PAIR_NAME + " has been deleted.")
 
-    def terminate_ec2_instances():
+    def terminate_ec2_instances(self):
         self.utilities.terminate_ec2_instances(self.instance_id)
 
-        self.utilities.print_info("Waiting for " + self.instance_id + " instance to terminate...")
+        # self.utilities.print_info("Waiting for " + self.instance_id + " instance to terminate...")
         self.utilities.wait_for_instances(self.instance_id, 'instance_terminated')
 
     def auto_shutdown(self):
