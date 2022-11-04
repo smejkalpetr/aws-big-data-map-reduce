@@ -16,6 +16,20 @@
     * Navigate to your AWS Academy account, then to AWS Details and copy your AWS CLI information. 
         
     * Paste the AWS CLI information to the opened credentials file and save and close the file.
+    
+    * If there's an error saying that you haven't configured your location, create a file called ``config`` in the ``~/.aws`` folder and put this in it:
+    
+    ```text
+   [default]
+   region = us-east-1
+   output = json 
+   ```
+   
+   * Now you can test if you're connected to the AWS by running the following command:
+   
+   ``aws ec2 describe-key-pairs``
+   
+   This shouldn't throw any exception (note that you need to have installed the aws-cli tool in order to run this command).
 
  2. Clone the GitHub repository to your desired location:
   
@@ -28,5 +42,3 @@
 4. Run the automated application:
   
     ``. ./setup.sh auto``
-  
-5. See the results in the ``./out`` directory.
