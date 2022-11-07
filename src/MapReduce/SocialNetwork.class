@@ -11,7 +11,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-public class WordCount {
+public class SocialNetwork {
 
   public static class MyMapper
        extends Mapper<Object, Text, IntWritable, IntWritable>{
@@ -50,7 +50,7 @@ public class WordCount {
     public void reduce(Text key, Iterable<IntWritable> values,
                        Context context
                        ) throws IOException, InterruptedException {
-      HashTable<Integer,Integer> table=new HashTable<Integer,Integer>;
+      HashTable<Integer,Integer> table=new HashTable<Integer,Integer>();
       for (IntWritable val : values) {
         int friend = val.get();
         if(table.contains(friendCount)){
