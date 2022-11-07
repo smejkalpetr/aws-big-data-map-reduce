@@ -18,8 +18,8 @@ class Controller:
             self.constants.SECURITY_GROUP_ID = (self.utilities.create_security_group(self.constants.VPC_ID, silent=True))['GroupId']
 
         if self.constants.SECURITY_GROUP_ID is None:
-            response_sg_id = (self.utilities.describe_security_group_id_by_name(self.constants.SECURITY_GROUP_NAME, silent=True))['SecurityGroups'][0]['GroupId']
-            if response_sg_id is None:
+            response = self.utilities.describe_security_group_id_by_name(self.constants.SECURITY_GROUP_NAME, silent=True)
+            if response is None:
                 self.utilities.print_info("Creating new Security Group...")
                 self.constants.SECURITY_GROUP_ID = (self.utilities.create_security_group(self.constants.VPC_ID, silent=True))['GroupId']
                 self.utilities.print_info("New Security Group " + self.constants.SECURITY_GROUP_NAME + " has been created.")
@@ -36,9 +36,9 @@ class Controller:
             self.utilities.create_key_pair()
 
         if self.constants.SECURITY_GROUP_NAME is not None:
-            response_sg_id = (self.utilities.describe_security_group_id_by_name(self.constants.SECURITY_GROUP_NAME, silent=True))['SecurityGroups'][0]['GroupId']
-            if response_sg_id is not None:
-                self.constants.SECURITY_GROUP_ID = response_sg_id
+            response = self.utilities.describe_security_group_id_by_name(self.constants.SECURITY_GROUP_NAME, silent=True)
+            if response is not None:
+                self.constants.SECURITY_GROUP_ID = response['SecurityGroups'][0]['GroupId']
         
         self.check_sg_and_kp()
         self.utilities.print_info("Initialization done.")
