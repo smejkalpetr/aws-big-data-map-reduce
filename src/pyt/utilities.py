@@ -22,7 +22,7 @@ def create_security_group(
         name="log8145-security-group",
         description="SG for VMs used in LOG8145",
         silent=False
-):
+) -> dict:
     client = boto3.client('ec2')
 
     try:
@@ -51,7 +51,7 @@ def create_security_group(
         if not silent:
             print(e)
 
-def describe_security_group_id_by_name(name, silent=False):
+def describe_security_group_id_by_name(name, silent=False) -> dict:
     client = boto3.client('ec2')
 
     try:
@@ -62,7 +62,7 @@ def describe_security_group_id_by_name(name, silent=False):
         if not silent:
             print(e)
 
-def create_key_pair(name="log8145-key-pair", silent=False):
+def create_key_pair(name="log8145-key-pair", silent=False) -> dict:
     client = boto3.client('ec2')
 
     try:
@@ -111,7 +111,7 @@ def create_ec2_instances(security_group_id,
         if not silent:
             print(e)
 
-def wait_for_instances(ids, state, silent=False):
+def wait_for_instances(ids, state, silent=False) -> dict:
     client = boto3.client('ec2')
 
     try:
@@ -138,7 +138,7 @@ def terminate_ec2_instances(instance_ids, silent=False) -> dict:
             print(e)
 
 
-def delete_security_group(group_id, silent=False):
+def delete_security_group(group_id, silent=False) -> dict:
     client = boto3.client('ec2')
 
     try: 
@@ -149,7 +149,7 @@ def delete_security_group(group_id, silent=False):
         if not silent:
             print(e)
 
-def delete_key_pair(key_pair_name, silent=False):
+def delete_key_pair(key_pair_name, silent=False) -> dict:
     client = boto3.client('ec2')
 
     try: 
