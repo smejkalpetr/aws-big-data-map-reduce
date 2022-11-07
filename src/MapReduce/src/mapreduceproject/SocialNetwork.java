@@ -37,6 +37,7 @@ public class SocialNetwork {
    
  }
 }
+
 public static class MyReducer
     extends Reducer<IntWritable,IntWritable,IntWritable,Text> {
 	Text result=new Text();
