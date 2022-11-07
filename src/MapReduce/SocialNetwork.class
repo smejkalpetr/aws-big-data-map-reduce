@@ -1,5 +1,5 @@
 import java.io.IOException;
-import java util.*;
+import java.util.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -54,10 +54,10 @@ public class WordCount {
       for (IntWritable val : values) {
         int friend = val.get();
         if(table.contains(friendCount)){
-            table.put(friend,table.get(friend)+1)
+            table.put(friend,table.get(friend)+1);
         }
         else{
-            table.put(friend,1)
+            table.put(friend,1);
         }
       }
       ArrayList<Integer> list = new ArrayList<>();
