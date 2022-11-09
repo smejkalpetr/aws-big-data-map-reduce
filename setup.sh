@@ -1,4 +1,4 @@
-# this is the setup script
+#!/bin/bash
 
 if [ $# -eq 0 ];
 then
@@ -12,21 +12,26 @@ else
     if [ "$1" == "auto" ];
     then
         echo "Installing..."
-        mkdir -p ./keys/ ;
+        mkdir -p ./keys
+        mkdir -p ./logs
         virtualenv venv && \
         source venv/bin/activate && \
         pip install -r requirements.txt;
+
         echo "Running..."
         python3 ./src/main.py;
+        
         echo "Cleaning..."
         deactivate;
         rm -rf ./venv;
         # rm -rf ./keys;
+        # rm -rf ./logs
         echo "Done."
     elif [ "$1" == "install" ];
     then
         echo "Installing..."
-        mkdir -p ./keys/ ;
+        mkdir -p ./keys
+        mkdir -p ./logs
         virtualenv venv && \
     	source venv/bin/activate && \
     	pip install -r requirements.txt;
@@ -38,6 +43,8 @@ else
     then
         echo "Cleaning..."
         deactivate
+        mkdir -p ./keys
+        mkdir -p ./logs
         rm -rf ./venv
     elif [  "$1" == "deactivate" ];
     then
