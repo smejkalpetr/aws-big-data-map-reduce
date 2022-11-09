@@ -1,39 +1,57 @@
-# this is the script that runs on a VM after its startup (this needs to install Hadoop and Spark)
+#!/bin/bash
 
+echo "Setup starting..."
 
-#Install Java 8 (other versions just don't work)
-sudo apt install curl -y
-sudo apt-get install unzip
-sudo apt-get install zip
+# update apt
+echo "Updating apt."
+sudo apt update
 
-curl -s "https://get.sdkman.io"	| bash
-source ~/.sdkman/bin/sdkman-init.sh\"
+# install java 8, python3  and pip3
+echo "Installing Java, Python3, pip3."
+sudo apt install -y openjdk-8-jre-headless
+sudo apt install -y python3
+sudo apt install -y python3-pip
 
-sdk install java 8.0.265-open
+# set PATH for Java
+echo "Setting up PATH for Java."
+echo '
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export PATH="$JAVA_HOME/bin:$PATH"
+' >> ~/.profile
 
-##Install Hadoop##
-wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.4/hadoop-3.3.4.tar.gz
-#unpack
-sudo tar -xvf hadoop-3.3.4.tar.gz -C /opt/
-#remove the archive file and go to the right directory
-rm hadoop-3.3.4.tar.gz && cd /opt
-#rename
-sudo mv hadoop-3.3.4 hadoop
-echo "export HADOOP_HOME=/opt/hadoop" >> ~/.bashrc
-echo "export PATH=\$PATH:\$HADOOP_HOME/bin:\$HADOOP_HOME/sbin" >> ~/.bashrc
+# install spark
+echo "Installing PySpark."
+pip install pyspark
 
-#No permission for this line, so yet to figure out
-echo "export JAVA_HOME=/.sdkman/candidates/java/8.0.265.open" >> /opt/hadoop/etc/hadoop/hadoop-env.sh
+# download hadoop, unpack it and copy to /usr/local
+echo "Downloading Hadoop."
+wget https://downloads.apache.org/hadoop/common/hadoop-3.3.1/hadoop-3.3.1.tar.gz
 
-##installing Spark##
-wget https://dlcdn.apache.org/spark/spark-3.3.1/spark-3.3.1-bin-hadoop3.tgz	
-#unpack
-sudo tar -xvf spark-3.3.1-bin-hadoop3.tgz -C /opt/
-#remove the archive and go the opt file
-rm spark-3.3.1-bin-hadoop3.tgz && cd /opt
-#rename to spark
-sudo mv spark-3.3.1-bin-hadoop3 spark
-#define the SPARK_HOME environment variable
-echo "export SPARK_HOME=/opt/spark" >> ~/.bashrc
-echo "export PATH=\$PATH:\$SPARK_HOME/bin" >> ~/.bashrc
-source ~/.bashrc 
+echo "Unzipping an copying Hadoop."
+sudo tar -xf hadoop-3.3.1.tar.gz -C /usr/local/
+
+echo "Deleting the Hadoop installation tar file."
+rm hadoop-3.3.1.tar.gz
+
+# update PATH for Hadoop
+echo "Setting up PATH for Hadoop."
+echo '
+export HADOOP_HOME=/usr/local/hadoop-3.3.1
+export PATH="$HADOOP_HOME/bin:$PATH"
+' >> ~/.profile
+
+# update hadoop env variables (java & HADOOP_HOME)
+echo "Setting up Hadoop variables."
+echo '
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export HADOOP_HOME=/usr/local/hadoop-3.3.1
+' >> /usr/local/hadoop-3.3.1/etc/hadoop/hadoop-env.sh
+
+echo "Reloading profile."
+# load .profile to current environment
+source ~/.profile
+
+# create file that indicates that the setup has finished
+touch setup_done.info
+
+echo "Setup done."
