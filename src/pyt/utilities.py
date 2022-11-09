@@ -62,6 +62,22 @@ def describe_security_group_id_by_name(name, silent=False) -> dict:
         if not silent:
             print(e)
 
+def describe_instance_by_id(instance_id, silent=False):
+    client = boto3.client('ec2')
+
+    try:
+        response = client.describe_instances(
+            InstanceIds=[instance_id]
+        )
+
+        return response
+
+    except Exception as e:
+        if not silent:
+            print(e)
+
+
+
 def create_key_pair(name="log8145-key-pair", silent=False) -> dict:
     client = boto3.client('ec2')
 
