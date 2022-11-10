@@ -1,11 +1,11 @@
-import boto3
 # this file contains functions that call the AWS API
+import boto3
 
 def print_info(message):
-    print(f'[INFO] {message}')
+    print(f'[RUN INFO] {message}')
 
 def print_error(message):
-    print(f'[Error] {message}')
+    print(f'[ERROR] {message}')
 
 def get_vpc(silent=False):
     client = boto3.client('ec2')
@@ -22,7 +22,7 @@ def create_security_group(
         name="log8145-security-group",
         description="SG for VMs used in LOG8145",
         silent=False
-) -> dict:
+    ) -> dict:
     client = boto3.client('ec2')
 
     try:
@@ -51,7 +51,10 @@ def create_security_group(
         if not silent:
             print(e)
 
-def describe_security_group_id_by_name(name, silent=False) -> dict:
+def describe_security_group_id_by_name(
+        name,
+        silent=False
+    ) -> dict:
     client = boto3.client('ec2')
 
     try:
@@ -62,7 +65,10 @@ def describe_security_group_id_by_name(name, silent=False) -> dict:
         if not silent:
             print(e)
 
-def describe_instance_by_id(instance_id, silent=False):
+def describe_instance_by_id(
+        instance_id,
+        silent=False
+    ):
     client = boto3.client('ec2')
 
     try:
@@ -76,9 +82,10 @@ def describe_instance_by_id(instance_id, silent=False):
         if not silent:
             print(e)
 
-
-
-def create_key_pair(name="log8145-key-pair", silent=False) -> dict:
+def create_key_pair(
+        name="log8145-key-pair",
+        silent=False
+    ) -> dict:
     client = boto3.client('ec2')
 
     try:
@@ -88,21 +95,19 @@ def create_key_pair(name="log8145-key-pair", silent=False) -> dict:
         n = pem_file.write(response['KeyMaterial'])
         pem_file.close()
 
-        if not silent:
-            print_info("The new private key has been saved to ./keys directory.")
-
         return f"./keys/{name}.pem"
     except Exception as e:
         if not silent:
             print(e)
 
-def create_ec2_instances(security_group_id,
-                         key_name,
-                         instance_type="t2.micro",
-                         count=1,
-                         ami="ami-0149b2da6ceec4bb0",
-                         silent=False,
-                         user_data=""
+def create_ec2_instances(
+        security_group_id,
+        key_name,
+        instance_type="t2.micro",
+        count=1,
+        ami="ami-0149b2da6ceec4bb0",
+        silent=False,
+        user_data=""
     ) -> dict:
     client = boto3.client('ec2')
 
@@ -127,7 +132,11 @@ def create_ec2_instances(security_group_id,
         if not silent:
             print(e)
 
-def wait_for_instances(ids, state, silent=False) -> dict:
+def wait_for_instances(
+        ids,
+        state,
+        silent=False
+    ) -> dict:
     client = boto3.client('ec2')
 
     try:
@@ -152,7 +161,6 @@ def terminate_ec2_instances(instance_ids, silent=False) -> dict:
     except Exception as e:
         if not silent:
             print(e)
-
 
 def delete_security_group(group_id, silent=False) -> dict:
     client = boto3.client('ec2')

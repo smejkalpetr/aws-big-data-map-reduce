@@ -1,0 +1,38 @@
+Collecting awscli==1.25.87
+  Using cached awscli-1.25.87-py3-none-any.whl (3.9 MB)
+Collecting boto3==1.24.86
+  Using cached boto3-1.24.86-py3-none-any.whl (132 kB)
+Collecting botocore==1.27.86
+  Using cached botocore-1.27.86-py3-none-any.whl (9.2 MB)
+Collecting colorama==0.4.4
+  Using cached colorama-0.4.4-py2.py3-none-any.whl (16 kB)
+Collecting docutils==0.16
+  Using cached docutils-0.16-py2.py3-none-any.whl (548 kB)
+Collecting jmespath==1.0.1
+  Using cached jmespath-1.0.1-py3-none-any.whl (20 kB)
+Collecting pyasn1==0.4.8
+  Using cached pyasn1-0.4.8-py2.py3-none-any.whl (77 kB)
+Collecting python-dateutil==2.8.2
+  Using cached python_dateutil-2.8.2-py2.py3-none-any.whl (247 kB)
+Collecting PyYAML==5.4.1
+  Using cached PyYAML-5.4.1-cp37-cp37m-macosx_10_9_x86_64.whl (249 kB)
+Collecting rsa==4.7.2
+  Using cached rsa-4.7.2-py3-none-any.whl (34 kB)
+Collecting s3transfer==0.6.0
+  Using cached s3transfer-0.6.0-py3-none-any.whl (79 kB)
+Collecting six==1.16.0
+  Using cached six-1.16.0-py2.py3-none-any.whl (11 kB)
+Collecting urllib3==1.26.12
+  Using cached urllib3-1.26.12-py2.py3-none-any.whl (140 kB)
+Collecting requests==2.28.1
+  Using cached requests-2.28.1-py3-none-any.whl (62 kB)
+Collecting certifi>=2017.4.17
+  Using cached certifi-2022.9.24-py3-none-any.whl (161 kB)
+Collecting idna<4,>=2.5
+  Using cached idna-3.4-py3-none-any.whl (61 kB)
+Collecting charset-normalizer<3,>=2
+  Using cached charset_normalizer-2.1.1-py3-none-any.whl (39 kB)
+Installing collected packages: pyasn1, rsa, docutils, jmespath, six, python-dateutil, urllib3, botocore, colorama, PyYAML, s3transfer, awscli, boto3, certifi, idna, charset-normalizer, requests
+Successfully installed PyYAML-5.4.1 awscli-1.25.87 boto3-1.24.86 botocore-1.27.86 certifi-2022.9.24 charset-normalizer-2.1.1 colorama-0.4.4 docutils-0.16 idna-3.4 jmespath-1.0.1 pyasn1-0.4.8 python-dateutil-2.8.2 requests-2.28.1 rsa-4.7.2 s3transfer-0.6.0 six-1.16.0 urllib3-1.26.12
+WARNING: You are using pip version 20.0.2; however, version 22.3 is available.
+You should consider upgrading via the '/Users/smejkalp/Documents/FIT/NI/POLYMTL/LOG8415-CC/cc-tp2/venv/bin/python -m pip install --upgrade pip' command.

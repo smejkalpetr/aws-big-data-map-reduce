@@ -48,10 +48,8 @@ export HADOOP_HOME=/usr/local/hadoop-3.3.1
 ' >> /usr/local/hadoop-3.3.1/etc/hadoop/hadoop-env.sh
 
 echo "Reloading profile."
+
 # load .profile to current environment
 source ~/.profile
-
-# create file that indicates that the setup has finished
-touch setup_done.info
 
 echo "Setup done."
