@@ -4,6 +4,7 @@
 .keys
 .logs
 *.pem
+*.log
 
 ### macOS ###
 # General
