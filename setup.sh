@@ -1,53 +1,46 @@
-# this is the setup script
+#!/bin/bash
 
 if [ $# -eq 0 ];
 then
-    echo "$0: Missing arguments"
-    exit 1
+    echo "[INFO] Starting..."
+
+    # setup phase
+    echo "[INFO] Setting up venv and installing requirements (see logs/venv_setup.log for more details)..."
+    mkdir -p ./keys
+    mkdir -p ./logs
+    virtualenv venv > ./logs/venv_setup.log 2>&1 && \
+    source venv/bin/activate > ./logs/venv_setup.log 2>&1 && \
+    pip install -r requirements.txt > ./logs/venv_setup.log 2>&1;
+    echo "[INFO] Done installing."
+
+    # run phase
+    echo "[INFO] Running the program..."
+    python3 ./src/main.py;
+    echo "[INFO] Done running."
+    
+    # clean phase
+    echo "[INFO] Cleaning..."
+    deactivate;
+    rm -rf ./venv;
+    # rm -rf ./keys;
+    echo "[INFO] Done cleaning."
+
+    echo "[INFO] Finished."
 elif [ $# -gt 2 ];
 then
-    echo "$0: Too many arguments: $@"
+    echo "$0: [INFO] Too many arguments: $@"
     exit 1
 else
-    if [ "$1" == "auto" ];
+    if [  "$1" == "clean" ];
     then
-        echo "Installing..."
-        mkdir -p ./keys/ ;
-        virtualenv venv && \
-        source venv/bin/activate && \
-        pip install -r requirements.txt;
-        echo "Running..."
-        python3 ./src/main.py;
-        echo "Cleaning..."
-        deactivate;
-        rm -rf ./venv;
-        # rm -rf ./keys;
-        echo "Done."
-    elif [ "$1" == "install" ];
-    then
-        echo "Installing..."
-        mkdir -p ./keys/ ;
-        virtualenv venv && \
-    	source venv/bin/activate && \
-    	pip install -r requirements.txt;
-    elif [  "$1" == "run" ];
-    then
-        echo "Running..."
-        python3 ./src/main.py
-    elif [  "$1" == "clean" ];
-    then
-        echo "Cleaning..."
+        # cleaning utility
+        echo "[INFO] Cleaning..."
         deactivate
+        mkdir -p ./keys
+        mkdir -p ./logs
         rm -rf ./venv
-    elif [  "$1" == "deactivate" ];
-    then
-        echo "Deactivating..."
-        deactivate
-    elif [  "$1" == "activate" ];
-    then
-        echo "Activating..."
-        source venv/bin/activate
+        echo "[INFO] Done cleaning."
     else
-        echo "Wrong argument."
+        echo "[INFO] Wrong argument."
     fi
 fi

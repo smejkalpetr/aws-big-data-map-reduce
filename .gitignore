@@ -2,7 +2,9 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=pycharm,venv,macos
 
 .keys
+.logs
 *.pem
+*.log
 
 ### macOS ###
 # General
