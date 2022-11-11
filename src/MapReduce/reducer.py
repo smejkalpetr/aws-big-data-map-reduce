@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 import sys
 def output_recommendations(my_key,friends):
     friends_list=friends.items()
