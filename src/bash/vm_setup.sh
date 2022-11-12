@@ -52,4 +52,38 @@ echo "Reloading profile."
 # load .profile to current environment
 source ~/.profile
 
-echo "Setup done."
+echo "Environment setup done."
+echo "Starting Hadoop setup..."
+
+echo '<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+</configuration>
+' > $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+
+echo '<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://localhost:9000</value>
+    </property>
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/var/lib/hadoop</value>
+    </property>
+</configuration>
+' > $HADOOP_HOME/etc/hadoop/core-site.xml
+
+sudo mkdir /var/lib/hadoop
+sudo chmod 777 /var/lib/hadoop
+hdfs namenode -format
+
+ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+echo "Hadoop setup done."

@@ -17,10 +17,16 @@ class Constants:
     URLS_DATASETS_PATH = "./src/wc/urls.txt"
 
     SCRIPT_VM_SETUP = "./src/bash/vm_setup.sh"
-    LOG_VM_SETUP = "./logs/ssh_setup.log"
+    LOG_VM_SETUP = "./logs/vm_setup.log"
 
     SCRIPT_DOWNLOAD_DATASETS = './src/bash/wordcount_download_dataset.sh'
     LOG_DOWNLOAD_DATASETS = './logs/download_dataset.log'
 
     SCRIPT_WORDCOUNT_LINUX = './src/bash/wordcount_linux.sh'
     LOG_WORDCOUNT_LINUX = './logs/wordcount_linux.log'
+
+    SCRIPT_WORDCOUNT_HADOOP = './src/bash/wordcount_hadoop.sh'
+    LOG_WORDCOUNT_HADOOP = './logs/wordcount_hadoop.log'
+
+    SCRIPT_WORDCOUNT_SPARK = './src/bash/wordcount_spark.sh'
+    LOG_WORDCOUNT_SPARK = './logs/wordcount_spark.log'
