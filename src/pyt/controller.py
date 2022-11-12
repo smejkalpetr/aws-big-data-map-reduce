@@ -12,10 +12,10 @@ class Controller:
     instance_id = None
     instance_public_ip = None
 
-    ##----------% UTILITY METHODS: %----------##
-    def setup_vm_with_script(self, vm_public_ip):
+    ##----------% OTHER METHODS: %----------##
+    def run_script_on_vm(self, vm_public_ip, script_path, log_path, arg1="", arg2=""):
         os.chmod(self.constants.KEY_PAIR_PATH, 0o400)
-        subprocess.check_call([self.constants.SSH_SETUP_SCRIPT_PATH, vm_public_ip])
+        subprocess.check_call([self.constants.SCRIPT_EXECUTE_ON_REMOTE, vm_public_ip, script_path, arg1, arg2, log_path])
 
     ##----------------------------------------##
     ##---------% INITIALIZE METHODS: %--------##
@@ -58,6 +58,32 @@ class Controller:
         self.check_security_group()
 
         self.utilities.print_info("Initialization done.")
+
+    ##----------------------------------------##
+    ##----------% WORDCOUNT METHODS: %---------##
+    def download_datasets(self):
+        os.chmod(self.constants.SCRIPT_DOWNLOAD_DATASETS, 0o777)
+
+        with open(self.constants.URLS_DATASETS_PATH) as file:
+            cnt = 0
+            for line in file:
+                self.run_script_on_vm(
+                    self.instance_public_ip,
+                    self.constants.SCRIPT_DOWNLOAD_DATASETS,
+                    f'{self.constants.LOG_DOWNLOAD_DATASETS}',
+                    line.rstrip(),
+                    f'input_file{cnt}.txt'
+                )
+                cnt = cnt + 1
+
+    def wordcount_linux_run(self):
+        print("Hello there! linux")
+
+    def wordcount_hadoop_run(self):
+        print("Hello there! hadoop")
+
+    def wordcount_spark_run(self):
+        print("Hello there! spark")
 
     ##----------------------------------------##
     ##----------% SHUTDOWN METHODS: %---------##
@@ -110,9 +136,25 @@ class Controller:
 
         self.instance_public_ip = self.utilities.describe_instance_by_id(self.instance_id)['Reservations'][0]['Instances'][0]['PublicIpAddress']
 
-        self.utilities.print_info(f"Installing Hadoop and Spark on the instance with public IP: {self.instance_public_ip} (see logs/vm_setup.log for more details)...")
-        self.setup_vm_with_script(self.instance_public_ip)
-        self.utilities.print_info("Hadoop and Spark are now ready.")
+        # self.utilities.print_info(f"Installing Hadoop and Spark on the instance with public IP: {self.instance_public_ip} (see logs/vm_setup.log for more details)...")
+        # self.run_script_on_vm(self.instance_public_ip, self.constants.SCRIPT_VM_SETUP, self.constants.LOG_VM_SETUP)
+        # self.utilities.print_info("Hadoop and Spark are now ready.")
+
+        self.utilities.print_info("Downloading datasets for WordCount...")
+        self.download_datasets()
+        self.utilities.print_info("Done downloading datasets.")
+
+        self.utilities.print_info("Running WordCount problem on Linux...")
+        self.wordcount_linux_run()
+        self.utilities.print_info("WordCount on Linux done.")
+
+        self.utilities.print_info("Running WordCount problem on Hadoop...")
+        self.wordcount_hadoop_run()
+        self.utilities.print_info("WordCount on Hadoop done.")
+
+        self.utilities.print_info("Running WordCount problem on Spark...")
+        self.wordcount_spark_run()
+        self.utilities.print_info("WordCount on Spark done.")
 
     ##----------------------------------------##
     ##-------% CONTROLLER MAIN METHOD: %------##
