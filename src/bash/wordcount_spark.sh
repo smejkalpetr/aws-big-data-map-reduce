@@ -29,7 +29,11 @@ for i in {1..3}
       spark-shell -i ~/wordcount_spark.py > /dev/null 2>&1
 
       ) 2>&1
-  )
+    )
 
-  echo "Run #${i}: The total time for all files to be processed by Spark (Wordcount) is ${TOTAL_TIME} seconds."
+    SUM_TOTAL_TIME=$(echo "$SUM_TOTAL_TIME + $TOTAL_TIME" | bc)
+    echo "Run #${i}: The total time for all files to be processed by Spark (Wordcount) is ${TOTAL_TIME} seconds."
   done
+
+AVG=$(echo "scale=3;($SUM_TOTAL_TIME) / 3.0" | bc | awk '{printf "%f", $0}')
+echo "The average time for all files to be processed by Spark (Wordcount) is ${AVG} seconds."
