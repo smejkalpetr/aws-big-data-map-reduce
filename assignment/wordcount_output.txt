@@ -1,0 +1,3 @@
+The average time for all files to be processed by Linux is 0.140000 seconds.
+The average time for all files to be processed by Hadoop is 49.451000 seconds.
+The average time for all files to be processed by Spark is 51.374000 seconds.

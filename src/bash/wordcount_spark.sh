@@ -4,8 +4,6 @@ source ~/.profile
 
 TIMEFORMAT=%R
 
-scp myfile.txt -i ./keys/log8145-key-pair.pem ./src/pyt/wordcount_spark.py ubuntu@$1:~
-
 SUM_TOTAL_TIME=0
 
 for i in {1..3}

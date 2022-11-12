@@ -28,5 +28,14 @@ class Constants:
     SCRIPT_WORDCOUNT_HADOOP = './src/bash/wordcount_hadoop.sh'
     LOG_WORDCOUNT_HADOOP = './logs/wordcount_hadoop.log'
 
+    SCRIPT_WORDCOUNT_SPARK_PREPARE = './src/bash/wordcount_spark_prepare.sh'
+    LOG_WORDCOUNT_SPARK_PREPARE = './logs/wordcount_spark_prepare.log'
+
     SCRIPT_WORDCOUNT_SPARK = './src/bash/wordcount_spark.sh'
     LOG_WORDCOUNT_SPARK = './logs/wordcount_spark.log'
+
+    SCRIPT_SOCIAL_NETWORK_PROBLEM_PREPARE='./src/bash/social_network_problem_prepare.sh'
+    LOG_SOCIAL_NETWORK_PROBLEM_PREPARE='./logs/social_network_problem_prepare.log'
+
+    SCRIPT_SOCIAL_NETWORK_PROBLEM = './src/bash/social_network_problem.sh'
+    LOG_SOCIAL_NETWORK_PROBLEM = './logs/social_network_problem.log'

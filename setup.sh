@@ -22,7 +22,7 @@ then
     echo "[INFO] Cleaning..."
     deactivate;
     rm -rf ./venv;
-    # rm -rf ./keys;
+    rm -rf ./keys;
     echo "[INFO] Done cleaning."
 
     echo "[INFO] Finished."

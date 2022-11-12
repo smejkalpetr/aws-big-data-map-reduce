@@ -13,6 +13,10 @@ class Controller:
     instance_public_ip = None
 
     ##----------% OTHER METHODS: %----------##
+    def run_script_on_local(self, script_path, arg, log_path):
+        os.chmod(script_path, 0o777)
+        subprocess.check_call([script_path, arg, log_path])
+
     def run_script_on_vm(self, vm_public_ip, script_path, log_path, arg1="", arg2=""):
         os.chmod(self.constants.KEY_PAIR_PATH, 0o400)
         subprocess.check_call([self.constants.SCRIPT_EXECUTE_ON_REMOTE, vm_public_ip, script_path, log_path, arg1, arg2])
@@ -90,12 +94,32 @@ class Controller:
             self.constants.LOG_WORDCOUNT_HADOOP
         )
 
+    def wordcount_spark_prepare(self):
+        self.run_script_on_local(
+            self.constants.SCRIPT_WORDCOUNT_SPARK_PREPARE,
+            self.instance_public_ip,
+            self.constants.LOG_WORDCOUNT_SPARK_PREPARE
+        )
+
     def wordcount_spark_run(self):
         self.run_script_on_vm(
             self.instance_public_ip,
             self.constants.SCRIPT_WORDCOUNT_SPARK,
-            self.constants.LOG_WORDCOUNT_SPARK,
-            self.instance_public_ip
+            self.constants.LOG_WORDCOUNT_SPARK
+        )
+
+    def social_network_problem_prepare(self):
+        self.run_script_on_local(
+            self.constants.SCRIPT_SOCIAL_NETWORK_PROBLEM_PREPARE,
+            self.instance_public_ip,
+            self.constants.LOG_SOCIAL_NETWORK_PROBLEM_PREPARE
+        )
+
+    def social_network_problem_run(self):
+        self.run_script_on_vm(
+            self.instance_public_ip,
+            self.constants.SCRIPT_SOCIAL_NETWORK_PROBLEM,
+            self.constants.LOG_SOCIAL_NETWORK_PROBLEM
         )
 
     ##----------------------------------------##
@@ -110,9 +134,9 @@ class Controller:
 
     def terminate_ec2_instances(self):
         self.utilities.print_info("Waiting for " + self.instance_id + " instance to terminate...")
-        self.utilities.terminate_ec2_instances(self.instance_id)
+        self.utilities.terminate_ec2_instances([self.instance_id], silent=True)
 
-        self.utilities.wait_for_instances(self.instance_id, 'instance_terminated')
+        self.utilities.wait_for_instances([self.instance_id], 'instance_terminated', silent=True)
         self.utilities.print_info("The instance has been terminated.")
 
     def delete_security_group(self):
@@ -170,11 +194,18 @@ class Controller:
         self.wordcount_spark_run()
         self.utilities.print_info("WordCount on Spark done (see ./logs/wordcount_spark.log for details).")
 
+        self.utilities.print_info("Preparing the Social Network Problem's files...")
+        self.social_network_problem_prepare()
+        self.utilities.print_info("Social Network Problem's preparation done (see ./logs/social_network_problem_prepare.log for details).")
+
+        self.utilities.print_info("Solving the Social Network Problem using map reduce...")
+        self.social_network_problem_run()
+        self.utilities.print_info("Social Network Problem solving done (see ./logs/social_network_problem.log for results and details).")
+
     ##----------------------------------------##
     ##-------% CONTROLLER MAIN METHOD: %------##
     def run(self):
         self.initialize_env()
         self.auto_setup()
-        # self.auto_shutdown()
-
+        self.auto_shutdown()
     ##----------------------------------------##

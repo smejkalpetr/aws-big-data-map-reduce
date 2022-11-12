@@ -27,10 +27,10 @@ for i in {1..3}
       hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.1.jar wordcount /user/hadoop/input/ /user/hadoop/output${i}/ > /dev/null 2>&1
 
       # list all results
-      #hdfs dfs -ls /user/hadoop/output
+      # hdfs dfs -ls /user/hadoop/output
 
       # list content of the result
-      #$ hdfs dfs -cat /user/hadoop/output/part-r-00000
+      # hdfs dfs -cat /user/hadoop/output/part-r-00000
       ) 2>&1
     )
 
