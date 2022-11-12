@@ -22,5 +22,5 @@ class Constants:
     SCRIPT_DOWNLOAD_DATASETS = './src/bash/wordcount_download_dataset.sh'
     LOG_DOWNLOAD_DATASETS = './logs/download_dataset.log'
 
-    SCRIPT_WORDCOUNT = ''
-    LOG_WORDCOUNT = ''
+    SCRIPT_WORDCOUNT_LINUX = './src/bash/wordcount_linux.sh'
+    LOG_WORDCOUNT_LINUX = './logs/wordcount_linux.log'

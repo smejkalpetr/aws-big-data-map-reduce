@@ -15,7 +15,7 @@ class Controller:
     ##----------% OTHER METHODS: %----------##
     def run_script_on_vm(self, vm_public_ip, script_path, log_path, arg1="", arg2=""):
         os.chmod(self.constants.KEY_PAIR_PATH, 0o400)
-        subprocess.check_call([self.constants.SCRIPT_EXECUTE_ON_REMOTE, vm_public_ip, script_path, arg1, arg2, log_path])
+        subprocess.check_call([self.constants.SCRIPT_EXECUTE_ON_REMOTE, vm_public_ip, script_path, log_path, arg1, arg2])
 
     ##----------------------------------------##
     ##---------% INITIALIZE METHODS: %--------##
@@ -70,14 +70,18 @@ class Controller:
                 self.run_script_on_vm(
                     self.instance_public_ip,
                     self.constants.SCRIPT_DOWNLOAD_DATASETS,
-                    f'{self.constants.LOG_DOWNLOAD_DATASETS}',
+                    f'{self.constants.LOG_DOWNLOAD_DATASETS}{cnt}',
                     line.rstrip(),
                     f'input_file{cnt}.txt'
                 )
                 cnt = cnt + 1
 
     def wordcount_linux_run(self):
-        print("Hello there! linux")
+        self.run_script_on_vm(
+            self.instance_public_ip,
+            self.constants.SCRIPT_WORDCOUNT_LINUX,
+            self.constants.LOG_WORDCOUNT_LINUX
+        )
 
     def wordcount_hadoop_run(self):
         print("Hello there! hadoop")
