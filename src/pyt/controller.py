@@ -70,7 +70,7 @@ class Controller:
                 self.run_script_on_vm(
                     self.instance_public_ip,
                     self.constants.SCRIPT_DOWNLOAD_DATASETS,
-                    f'{self.constants.LOG_DOWNLOAD_DATASETS}{cnt}',
+                    f"{self.constants.LOG_DOWNLOAD_DATASETS}_{cnt}.log",
                     line.rstrip(),
                     f'input_file{cnt}.txt'
                 )
@@ -94,7 +94,8 @@ class Controller:
         self.run_script_on_vm(
             self.instance_public_ip,
             self.constants.SCRIPT_WORDCOUNT_SPARK,
-            self.constants.LOG_WORDCOUNT_SPARK
+            self.constants.LOG_WORDCOUNT_SPARK,
+            self.instance_public_ip
         )
 
     ##----------------------------------------##
