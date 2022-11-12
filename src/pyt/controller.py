@@ -12,10 +12,10 @@ class Controller:
     instance_id = None
     instance_public_ip = None
 
-    ##----------% UTILITY METHODS: %----------##
-    def setup_vm_with_script(self, vm_public_ip):
+    ##----------% OTHER METHODS: %----------##
+    def run_script_on_vm(self, vm_public_ip, script_path, log_path, arg1="", arg2=""):
         os.chmod(self.constants.KEY_PAIR_PATH, 0o400)
-        subprocess.check_call([self.constants.SSH_SETUP_SCRIPT_PATH, vm_public_ip])
+        subprocess.check_call([self.constants.SCRIPT_EXECUTE_ON_REMOTE, vm_public_ip, script_path, log_path, arg1, arg2])
 
     ##----------------------------------------##
     ##---------% INITIALIZE METHODS: %--------##
@@ -60,6 +60,45 @@ class Controller:
         self.utilities.print_info("Initialization done.")
 
     ##----------------------------------------##
+    ##----------% WORDCOUNT METHODS: %---------##
+    def download_datasets(self):
+        os.chmod(self.constants.SCRIPT_DOWNLOAD_DATASETS, 0o777)
+
+        with open(self.constants.URLS_DATASETS_PATH) as file:
+            cnt = 0
+            for line in file:
+                self.run_script_on_vm(
+                    self.instance_public_ip,
+                    self.constants.SCRIPT_DOWNLOAD_DATASETS,
+                    f"{self.constants.LOG_DOWNLOAD_DATASETS}_{cnt}.log",
+                    line.rstrip(),
+                    f'input_file{cnt}.txt'
+                )
+                cnt = cnt + 1
+
+    def wordcount_linux_run(self):
+        self.run_script_on_vm(
+            self.instance_public_ip,
+            self.constants.SCRIPT_WORDCOUNT_LINUX,
+            self.constants.LOG_WORDCOUNT_LINUX
+        )
+
+    def wordcount_hadoop_run(self):
+        self.run_script_on_vm(
+            self.instance_public_ip,
+            self.constants.SCRIPT_WORDCOUNT_HADOOP,
+            self.constants.LOG_WORDCOUNT_HADOOP
+        )
+
+    def wordcount_spark_run(self):
+        self.run_script_on_vm(
+            self.instance_public_ip,
+            self.constants.SCRIPT_WORDCOUNT_SPARK,
+            self.constants.LOG_WORDCOUNT_SPARK,
+            self.instance_public_ip
+        )
+
+    ##----------------------------------------##
     ##----------% SHUTDOWN METHODS: %---------##
     def auto_shutdown(self):
         self.terminate_ec2_instances()
@@ -70,10 +109,11 @@ class Controller:
         self.delete_key_pair()
 
     def terminate_ec2_instances(self):
+        self.utilities.print_info("Waiting for " + self.instance_id + " instance to terminate...")
         self.utilities.terminate_ec2_instances(self.instance_id)
 
-        # self.utilities.print_info("Waiting for " + self.instance_id + " instance to terminate...")
         self.utilities.wait_for_instances(self.instance_id, 'instance_terminated')
+        self.utilities.print_info("The instance has been terminated.")
 
     def delete_security_group(self):
         self.utilities.delete_security_group(self.constants.SECURITY_GROUP_ID, silent=True)
@@ -111,8 +151,24 @@ class Controller:
         self.instance_public_ip = self.utilities.describe_instance_by_id(self.instance_id)['Reservations'][0]['Instances'][0]['PublicIpAddress']
 
         self.utilities.print_info(f"Installing Hadoop and Spark on the instance with public IP: {self.instance_public_ip} (see logs/vm_setup.log for more details)...")
-        self.setup_vm_with_script(self.instance_public_ip)
+        self.run_script_on_vm(self.instance_public_ip, self.constants.SCRIPT_VM_SETUP, self.constants.LOG_VM_SETUP)
         self.utilities.print_info("Hadoop and Spark are now ready.")
+
+        self.utilities.print_info("Downloading datasets for WordCount...")
+        self.download_datasets()
+        self.utilities.print_info("Done downloading datasets.")
+
+        self.utilities.print_info("Running WordCount problem on Linux...")
+        self.wordcount_linux_run()
+        self.utilities.print_info("WordCount on Linux done (see ./logs/wordcount_linux.log for details).")
+
+        self.utilities.print_info("Running WordCount problem on Hadoop...")
+        self.wordcount_hadoop_run()
+        self.utilities.print_info("WordCount on Hadoop done (see ./logs/wordcount_hadoop.log for details).")
+
+        self.utilities.print_info("Running WordCount problem on Spark...")
+        self.wordcount_spark_run()
+        self.utilities.print_info("WordCount on Spark done (see ./logs/wordcount_spark.log for details).")
 
     ##----------------------------------------##
     ##-------% CONTROLLER MAIN METHOD: %------##
