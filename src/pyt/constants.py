@@ -1,5 +1,6 @@
 
 class Constants:
+    """ Stores all the constant variables used in the program. """
     KEY_PAIR_NAME = "log8145-key-pair"
     KEY_PAIR_PATH = "./keys/log8145-key-pair.pem"
 

@@ -26,7 +26,7 @@ class Controller:
 
     def check_default_vpc(self):
         """ Checks and sets the VPC from AWS."""
-        self.constants.VPC_ID = self.utilities.get_vpc()
+        self.constants.VPC_ID = self.utilities.gtoet_vpc()
 
     def check_key_pair(self):
         """ Creates a new key pair in AWS. """
@@ -68,7 +68,6 @@ class Controller:
         self.check_security_group()
 
         self.utilities.print_info("Initialization done.")
-
 
     def download_datasets(self):
         """ Downloads WordCount datasets on a running VM. """

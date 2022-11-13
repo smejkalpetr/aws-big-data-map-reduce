@@ -1,13 +1,19 @@
-# this file contains functions that call the AWS API
+"""this file contains functions that call the AWS API"""
 import boto3
 
+
 def print_info(message):
+    """ Prints info message in a unified format. """
     print(f'[RUN INFO] {message}')
 
+
 def print_error(message):
+    """ Prints error message in a unified format. """
     print(f'[ERROR] {message}')
 
+
 def get_vpc(silent=False):
+    """ Gets the VPC from AWS. """
     client = boto3.client('ec2')
     try:
         response = client.describe_vpcs()
@@ -22,7 +28,8 @@ def create_security_group(
         name="log8145-security-group",
         description="SG for VMs used in LOG8145",
         silent=False
-    ) -> dict:
+        ) -> dict:
+    """ Creates a new security group with a specific name and description. """
     client = boto3.client('ec2')
 
     try:
@@ -51,10 +58,12 @@ def create_security_group(
         if not silent:
             print(e)
 
+
 def describe_security_group_id_by_name(
         name,
         silent=False
-    ) -> dict:
+        ) -> dict:
+    """ Describes the security group based on its name. """
     client = boto3.client('ec2')
 
     try:
@@ -65,10 +74,12 @@ def describe_security_group_id_by_name(
         if not silent:
             print(e)
 
+
 def describe_instance_by_id(
         instance_id,
         silent=False
-    ):
+        ):
+    """ Describes the instance based on its ID. """
     client = boto3.client('ec2')
 
     try:
@@ -82,10 +93,12 @@ def describe_instance_by_id(
         if not silent:
             print(e)
 
+
 def create_key_pair(
         name="log8145-key-pair",
         silent=False
-    ) -> dict:
+        ) -> dict:
+    """ Creates a new key pair with a specific name. """
     client = boto3.client('ec2')
 
     try:
@@ -100,6 +113,7 @@ def create_key_pair(
         if not silent:
             print(e)
 
+
 def create_ec2_instances(
         security_group_id,
         key_name,
@@ -108,7 +122,8 @@ def create_ec2_instances(
         ami="ami-0149b2da6ceec4bb0",
         silent=False,
         user_data=""
-    ) -> dict:
+        ) -> dict:
+    """ Creates proposed number of AWS instances of specified type with a given security group ID. """
     client = boto3.client('ec2')
 
     try:
@@ -132,11 +147,13 @@ def create_ec2_instances(
         if not silent:
             print(e)
 
+
 def wait_for_instances(
         ids,
         state,
         silent=False
-    ) -> dict:
+        ) -> dict:
+    """ Makes the program wait until instances specified by ids are all in the proposed state. """
     client = boto3.client('ec2')
 
     try:
@@ -152,7 +169,9 @@ def wait_for_instances(
         if not silent:
             print(e)
 
+
 def terminate_ec2_instances(instance_ids, silent=False) -> dict:
+    """ Terminates instances based on specified IDs. """
     client = boto3.client('ec2')
 
     try:
@@ -162,7 +181,9 @@ def terminate_ec2_instances(instance_ids, silent=False) -> dict:
         if not silent:
             print(e)
 
+
 def delete_security_group(group_id, silent=False) -> dict:
+    """ Deletes security group based on its ID. """
     client = boto3.client('ec2')
 
     try: 
@@ -173,7 +194,9 @@ def delete_security_group(group_id, silent=False) -> dict:
         if not silent:
             print(e)
 
+
 def delete_key_pair(key_pair_name, silent=False) -> dict:
+    """ Deletes key pair based on its name. """
     client = boto3.client('ec2')
 
     try: 
