@@ -41,4 +41,8 @@
   
 4. Run the automated application:
   
-    ``. ./setup.sh auto``
+    ``. ./setup.sh``
+    
+5. See output in the log files
+  
+    ``./logs/wordcount*.log`` and ``./logs/social_network_problem.log``
