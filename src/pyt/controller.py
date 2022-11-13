@@ -12,20 +12,24 @@ class Controller:
     instance_id = None
     instance_public_ip = None
 
-    ##----------% OTHER METHODS: %----------##
     def run_script_on_local(self, script_path, arg, log_path):
+        """ Runs bash script specified in the script_path and sends additional arguments to the script
+            to store the logs of the running script. """
         os.chmod(script_path, 0o777)
         subprocess.check_call([script_path, arg, log_path])
 
     def run_script_on_vm(self, vm_public_ip, script_path, log_path, arg1="", arg2=""):
+        """ Runs bash script specified in the script_path on an AWS instance specified by vm_public_ip
+         and sends additional arguments to the script to store the logs of the running script. """
         os.chmod(self.constants.KEY_PAIR_PATH, 0o400)
         subprocess.check_call([self.constants.SCRIPT_EXECUTE_ON_REMOTE, vm_public_ip, script_path, log_path, arg1, arg2])
 
-    ##----------------------------------------##
-    ##---------% INITIALIZE METHODS: %--------##
     def check_default_vpc(self):
+        """ Checks and sets the VPC from AWS."""
         self.constants.VPC_ID = self.utilities.get_vpc()
+
     def check_key_pair(self):
+        """ Creates a new key pair in AWS. """
         self.utilities.print_info("Resolving Key Pair...")
 
         if self.constants.KEY_PAIR_PATH is None:
@@ -38,6 +42,7 @@ class Controller:
             self.utilities.print_info("The new private key has been saved to ./keys directory.")
 
     def check_security_group(self):
+        """ Checks if security group exists and if not, creates one."""
         self.utilities.print_info("Resolving Security Group...")
 
         if self.constants.SECURITY_GROUP_NAME is None:
@@ -55,6 +60,7 @@ class Controller:
                 self.utilities.print_info("New Security Group " + self.constants.SECURITY_GROUP_NAME + " has been created.")
 
     def initialize_env(self):
+        """ Initialises the AWS by getting the VPC and setting the security group and key pair."""
         self.utilities.print_info("Initializing...")
 
         self.check_default_vpc()
@@ -63,9 +69,9 @@ class Controller:
 
         self.utilities.print_info("Initialization done.")
 
-    ##----------------------------------------##
-    ##----------% WORDCOUNT METHODS: %---------##
+
     def download_datasets(self):
+        """ Downloads WordCount datasets on a running VM. """
         os.chmod(self.constants.SCRIPT_DOWNLOAD_DATASETS, 0o777)
 
         with open(self.constants.URLS_DATASETS_PATH) as file:
@@ -81,6 +87,7 @@ class Controller:
                 cnt = cnt + 1
 
     def wordcount_linux_run(self):
+        """ Runs the WordCount algorithm using Linux on VM. """
         self.run_script_on_vm(
             self.instance_public_ip,
             self.constants.SCRIPT_WORDCOUNT_LINUX,
@@ -88,6 +95,7 @@ class Controller:
         )
 
     def wordcount_hadoop_run(self):
+        """ Runs the WordCount algorithm using Hadoop on VM. """
         self.run_script_on_vm(
             self.instance_public_ip,
             self.constants.SCRIPT_WORDCOUNT_HADOOP,
@@ -95,6 +103,7 @@ class Controller:
         )
 
     def wordcount_spark_prepare(self):
+        """ Prepares"""
         self.run_script_on_local(
             self.constants.SCRIPT_WORDCOUNT_SPARK_PREPARE,
             self.instance_public_ip,
@@ -102,6 +111,7 @@ class Controller:
         )
 
     def wordcount_spark_run(self):
+        """ Runs the WordCount algorithm using Spark on VM. """
         self.run_script_on_vm(
             self.instance_public_ip,
             self.constants.SCRIPT_WORDCOUNT_SPARK,
@@ -109,6 +119,7 @@ class Controller:
         )
 
     def social_network_problem_prepare(self):
+        """ Prepares the VM environment for executing the Social Network Problem. """
         self.run_script_on_local(
             self.constants.SCRIPT_SOCIAL_NETWORK_PROBLEM_PREPARE,
             self.instance_public_ip,
@@ -116,15 +127,16 @@ class Controller:
         )
 
     def social_network_problem_run(self):
+        """ Runs the Social Network Problem algorithm on VM. """
         self.run_script_on_vm(
             self.instance_public_ip,
             self.constants.SCRIPT_SOCIAL_NETWORK_PROBLEM,
             self.constants.LOG_SOCIAL_NETWORK_PROBLEM
         )
 
-    ##----------------------------------------##
-    ##----------% SHUTDOWN METHODS: %---------##
     def auto_shutdown(self):
+        """ Shuts down the application by terminating the created instance,
+            deleting security group and key pair on AWS. """
         self.terminate_ec2_instances()
 
         if self.constants.SECURITY_GROUP_ID is not None:
@@ -133,6 +145,7 @@ class Controller:
         self.delete_key_pair()
 
     def terminate_ec2_instances(self):
+        """ Terminates specified instance and waits for it to be terminates until proceeding with the program. """
         self.utilities.print_info("Waiting for " + self.instance_id + " instance to terminate...")
         self.utilities.terminate_ec2_instances([self.instance_id], silent=True)
 
@@ -140,10 +153,12 @@ class Controller:
         self.utilities.print_info("The instance has been terminated.")
 
     def delete_security_group(self):
+        """ Deletes the security group in AWS. """
         self.utilities.delete_security_group(self.constants.SECURITY_GROUP_ID, silent=True)
         self.utilities.print_info("Security Group " + self.constants.SECURITY_GROUP_NAME + " has been deleted.")
 
     def delete_key_pair(self):
+        """ Deletes the key pair group in AWS. """
         self.utilities.delete_key_pair(self.constants.KEY_PAIR_NAME, silent=True)
 
         cctp1_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -152,9 +167,9 @@ class Controller:
 
         self.utilities.print_info("Key Pair " + self.constants.KEY_PAIR_NAME + " has been deleted.")
 
-    ##----------------------------------------##
-    ##------------% SETUP METHODS: %----------##
     def auto_setup(self):
+        """ Runs the automated implementation of the wordcount problem and the social network problem
+            on a newly created AWS instance."""
         self.utilities.print_info("Creating M4.large instance...")
 
         response = self.utilities.create_ec2_instances(
@@ -202,10 +217,8 @@ class Controller:
         self.social_network_problem_run()
         self.utilities.print_info("Social Network Problem solving done (see ./logs/social_network_problem.log for results and details).")
 
-    ##----------------------------------------##
-    ##-------% CONTROLLER MAIN METHOD: %------##
     def run(self):
+        """ Runs the whole application implementation. """
         self.initialize_env()
         self.auto_setup()
         self.auto_shutdown()
-    ##----------------------------------------##
